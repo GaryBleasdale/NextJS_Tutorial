@@ -1,10 +1,23 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 import Link from 'next/link'
+import { getSortedPostsData }  from '../lib/posts';
+import Layout from '../components/layout'
+import utilStyles from '../styles/utils.module.css'
 
-export default function Home() {
+export async function getStaticProps() {
+  const allPostsData = getSortedPostsData();
+  return {
+    props: {
+      allPostsData,
+    },
+  };
+}
+
+export default function Home({allPostsData}) {
   return (
-    <div className={styles.container}>
+    <Layout home>
+       <div className={styles.container}>
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
@@ -18,6 +31,27 @@ export default function Home() {
         <p className={styles.description}>
           Get started by editing <code>pages/index.js</code>
         </p>
+
+        
+  
+
+      {/* Add this <section> tag below the existing <section> tag */}
+      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
+        <h2 className={utilStyles.headingLg}>Blog</h2>
+        <ul className={utilStyles.list}>
+          {allPostsData.map(({ id, date, title }) => (
+            <li className={utilStyles.listItem} key={id}>
+              {title}
+              <br />
+              {id}
+              <br />
+              {date}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+
 
         <div className={styles.grid}>
           <a href="https://nextjs.org/docs" className={styles.card}>
@@ -112,5 +146,8 @@ export default function Home() {
         }
       `}</style>
     </div>
+
+    </Layout>
+    
   )
 }
